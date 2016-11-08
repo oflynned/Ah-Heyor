@@ -22,20 +22,26 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\maths_funcs.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderHelper.cpp" />
+    <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h" />
     <ClInclude Include="Math\maths_funcs.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Shaders\simpleFragmentShader.txt" />
-    <Text Include="Shaders\simpleVertexShader.txt" />
+    <None Include="Shaders\lightBulb.frag" />
+    <None Include="Shaders\lightBulb.vert" />
+    <None Include="Shaders\lightingShader.frag" />
+    <None Include="Shaders\lightingShader.vert" />
+    <None Include="Shaders\simpleShader.frag" />
+    <None Include="Shaders\simpleShader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{435032E1-4FB7-48C4-A343-F59156286B38}</ProjectGuid>
@@ -114,13 +120,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>U:\CS4052\Lab1\Plugins\assimp\include;U:\CS4052\Lab1\Plugins\glew-1.10.0\include;U:\CS4052\Lab1\Plugins\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>U:\CS4052\Lab1\Plugins\Simple OpenGL Image Library\src;U:\CS4052\Lab1\Plugins\assimp\include;U:\CS4052\Lab1\Plugins\glew-1.10.0\include;U:\CS4052\Lab1\Plugins\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>U:\CS4052\Lab1\Plugins\assimp\lib\Release;U:\CS4052\Lab1\Plugins\glew-1.10.0\lib\Release\Win32;U:\CS4052\Lab1\Plugins\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freeglut.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>U:\Simple OpenGL Image Library\lib;U:\CS4052\Lab1\Plugins\assimp\lib\x86;U:\CS4052\Lab1\Plugins\glew-1.10.0\lib\Release\Win32;U:\CS4052\Lab1\Plugins\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;freeglut.lib;glew32.lib;assimp.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

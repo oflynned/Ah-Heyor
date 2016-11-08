@@ -13,17 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Helpers">
-      <UniqueIdentifier>{03f10070-8f4b-4179-ad64-4b2be79c0c09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects">
-      <UniqueIdentifier>{d5947007-7bf4-4442-bad2-c143a21bd6be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Maths">
       <UniqueIdentifier>{cdb93ed2-5374-46e2-a01a-e295a5969914}</UniqueIdentifier>
     </Filter>
     <Filter Include="Loaders">
       <UniqueIdentifier>{415758b4-6f43-4127-9dac-1145092b2a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{0c0ecc97-bbf5-40c8-81ef-36f8db2c1a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{d5947007-7bf4-4442-bad2-c143a21bd6be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -32,9 +32,6 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderHelper.cpp">
-      <Filter>Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Math\maths_funcs.cpp">
       <Filter>Maths</Filter>
@@ -54,6 +51,15 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h">
@@ -64,7 +70,23 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Shaders\simpleFragmentShader.txt" />
-    <Text Include="Shaders\simpleVertexShader.txt" />
+    <None Include="Shaders\simpleShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\simpleShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\lightingShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\lightingShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\lightBulb.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\lightBulb.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

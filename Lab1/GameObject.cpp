@@ -1,48 +1,46 @@
 #pragma once
 #include "GLIncludes.h"
-
-#include <assimp/cimport.h> // C importer
-#include <assimp/scene.h> // collects data
-#include <assimp/postprocess.h> // various extra operations
+#include "Model.cpp"
+#include "Shader.cpp"
+#include "File.cpp"
 
 class GameObject {
 private:
 	vec3 pos;
+	vec3 scale_tuple = vec3(1.0f, 1.0f, 1.0f);
+
 	float rot_x = 0.0f, rot_y = 0.0f, rot_z = 0.0f;
-	float pos_x = 0.0f, pos_y = 0.0f, pos_z = 0.0f;
+	float scale_coeff = 1.0f;
 
-	GLuint vao = 0;
-
-	mat4 model;
-	int point_count;
+	mat4 modelMat;
+	Model model;
+	Shader shader;
 
 public:
-	GameObject() {}
-
-	GameObject(vec3 pos, int point_count, GLuint vao) {
+	GameObject(vec3 pos, Shader shader) {
 		this->pos = pos;
-		this->point_count = point_count;
-		this->vao = vao;
+		this->shader = shader;
 	}
 
 	virtual ~GameObject() {}
 
-	mat4 getModel() { return this->model; }
+	mat4 getModelMat() { return this->modelMat; }
 	vec3 getPos() { return this->pos; }
-	int getPointCount() { return this->point_count; }
-	int getVao() { return this->vao;}
 
 	void update() {
-		model = identity_mat4();
-		model = rotate_x_deg(model, -90);
-		model = rotate_y_deg(model, rot_y);
-		model = translate(model, pos);
+		scale_tuple = vec3(scale_coeff, scale_coeff, scale_coeff);
+
+		modelMat = identity_mat4();
+		modelMat = rotate_x_deg(modelMat, rot_x);
+		modelMat = rotate_y_deg(modelMat, rot_y);
+		modelMat = rotate_z_deg(modelMat, rot_z);
+		modelMat = scale(modelMat, scale_tuple);
+		modelMat = translate(modelMat, pos);
 	}
 
 	void draw(int mat_loc) {
-		glBindVertexArray(vao);
-		glUniformMatrix4fv(mat_loc, 1, GL_FALSE, getModel().m);
-		glDrawArrays(GL_TRIANGLES, 0, getPointCount());
+		glUniformMatrix4fv(mat_loc, 1, GL_FALSE, modelMat.m);
+		model.draw(shader);
 	}
 
 	void translateObject(vec3 pos) {
