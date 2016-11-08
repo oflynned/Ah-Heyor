@@ -6,7 +6,7 @@ class Camera {
 private:
 	const float YAW = -90.0f;
 	const float PITCH = 0.0f;
-	const float SPEED = 5.0f;
+	const float SPEED = 60.0f;
 	const float SENSITIVITY = 0.25f;
 	const float FOV = 45.0f;
 
@@ -15,23 +15,23 @@ private:
 
 	void updateVectors() {
 		vec3 front;
-		front.v[0] = cos(radians(yaw)) * cos(radians(pitch));
-		front.v[1] = sin(radians(pitch));
-		front.v[2] = sin(radians(yaw)) * cos(radians(pitch));
+		front.v[0] = cos(radians(this->yaw)) * cos(radians(this->pitch));
+		front.v[1] = sin(radians(this->pitch));
+		front.v[2] = sin(radians(this->yaw)) * cos(radians(this->pitch));
 		
 		this->front = normalise(front);
-		this->right = normalise(cross(front, worldUp));
-		this->up = normalise(cross(right, front));
+		this->right = normalise(cross(this->front, this->worldUp));
+		this->up = normalise(cross(this->right, this->front));
+		
+		this->pos.v[1] = 0.0f;
 	}
 
 public:
 	Camera(vec3 pos = vec3(0.0f, 0.0f, 3.0f)) {
 		this->pos = pos;
-		this->up = vec3(0.0f, 1.0f, 0.0f);
 		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
 		this->right = vec3(0.0f, 0.0f, -1.0f);
 		this->yaw = YAW;
-		this->speed = SPEED;
 		this->speed = SPEED;
 		this->sensitivity = SENSITIVITY;
 		this->fov = FOV;
@@ -67,16 +67,16 @@ public:
 	}
 
 	void mouseMove(float x_offset, float y_offset, bool constrained = true) {
-		x_offset *= sensitivity;
-		y_offset *= sensitivity;
+		x_offset *= this->sensitivity;
+		y_offset *= this->sensitivity;
 
-		yaw += x_offset;
-		pitch += y_offset;
+		this->yaw += x_offset;
+		this->pitch += y_offset;
 
 		if (constrained) {
-			// prevent gimball lock
-			if (pitch > 89.0f) pitch = 89.0f;
-			if (pitch < -89.0f) pitch = -89.0f;
+			// prevent gimbal lock
+			if (this->pitch > 45.0f) this->pitch = 45.0f;
+			if (this->pitch < -45.0f) this->pitch = -45.0f;
 		}
 
 		updateVectors();

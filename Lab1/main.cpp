@@ -34,6 +34,8 @@ Shader shader, lightShader;
 Model man, light;
 Camera camera;
 
+float last_x = 0.0f, last_y = 0.0f;
+
 GLuint shaderProgramID;
 float delta;
 int width = 800;
@@ -126,6 +128,16 @@ void mouseRoll(int button, int dir, int x, int y) {
 	camera.adjustFOV(dir);
 }
 
+void mouseMove(int x, int y) {
+	float xoffset = x - last_x;
+	float yoffset = last_y - y;
+
+	last_x = x;
+	last_y = y;
+
+	camera.mouseMove(xoffset, yoffset);
+}
+
 int main(int argc, char** argv) {
 
 	// Set up the window
@@ -138,7 +150,10 @@ int main(int argc, char** argv) {
 	glutDisplayFunc(display);
 	glutIdleFunc(updateScene);
 	glutKeyboardFunc(keypress);
+	glutPassiveMotionFunc(mouseMove);
 	glutMouseWheelFunc(mouseRoll);
+
+	glutFullScreen();
 
 	// A call to glewInit() must be done after glut is initialized!
 	GLenum res = glewInit();
