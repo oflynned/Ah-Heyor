@@ -8,7 +8,7 @@ private:
 	const float PITCH = 0.0f;
 	const float SPEED = 60.0f;
 	const float SENSITIVITY = 0.25f;
-	const float FOV = 45.0f;
+	const float FOV = 40.0f;
 
 	vec3 pos, front, up, worldUp, right;
 	float yaw, pitch, speed, sensitivity, fov;
@@ -22,12 +22,10 @@ private:
 		this->front = normalise(front);
 		this->right = normalise(cross(this->front, this->worldUp));
 		this->up = normalise(cross(this->right, this->front));
-		
-		this->pos.v[1] = 0.0f;
 	}
 
 public:
-	Camera(vec3 pos = vec3(0.0f, 0.0f, 3.0f)) {
+	Camera(vec3 pos = vec3(3.0f, 3.0f, 3.0f)) {
 		this->pos = pos;
 		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
 		this->right = vec3(0.0f, 0.0f, -1.0f);
@@ -43,8 +41,8 @@ public:
 	mat4 getView() { return look_at(pos, pos + front, up); }
 	float getFOV() { return this->fov; }
 	void adjustFOV(float diff) {
-		if (fov < 10) fov = 10;
-		else if (fov > 120) fov = 120;
+		if (fov < 20) fov = 20;
+		else if (fov > 60) fov = 60;
 		else fov -= diff;
 	}
 
@@ -64,6 +62,9 @@ public:
 			this->pos += this->right * velocity;
 			break;
 		}
+
+		//this->pos.v[1] = 0.0f;
+		//this->front.v[1] = 0.0f;
 	}
 
 	void mouseMove(float x_offset, float y_offset, bool constrained = true) {

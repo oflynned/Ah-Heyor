@@ -92,27 +92,28 @@ public:
 		for (auto i = 0; i < this->textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 
+			std::stringstream ss;
+			std::string number;
 			std::string name = this->textures[i].type;
 			if (name == "texture_diffuse")
-				number = std::to_string(diffuse_no++);
+				ss << diffuse_no++; 
 			else if (name == "texture_specular")
-				std::to_string(specular_no++);
+				ss << specular_no++; 
 			else if (name == "texture_normal")
-				std::to_string(normal_no++);
+				ss << normal_no++;
 			else if (name == "texture_height")
-				std::to_string(height_no++);
+				ss << height_no++;
+
+			number = ss.str();
+
+			glUniform1f(glGetUniformLocation(shader.getProgram(), (name + number).c_str()), i);
+			glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
 		}
 
 		// draw to bound vertex array
 		glBindVertexArray(this->vao);
 		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
-
-		// reset to default and deallocate memory
-		for (auto i = 0; i < this->textures.size(); i++) {
-			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
 	}
 
 	GLuint getVAO() { return this->vao; }

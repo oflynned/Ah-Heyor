@@ -23,29 +23,27 @@
 #include "GLIncludes.h"
 
 #define MESH_NANOSUIT "nanosuit/nanosuit.obj"
-#define MESH_MUSHROOM "mushroom.dae"
-#define MESH_BOX "box.dae"
 #define MESH_PLANE "plane.dae"
-#define MONKEY "monkeyhead.dae"
 
 using namespace std;
 
-Shader shader, lightShader;
-Model man, light;
+Shader shader;
+Model man, ground;
 Camera camera;
+Light light(vec3(0.0f, -4.0f, 0.0f));
 
 float last_x = 0.0f, last_y = 0.0f;
 
 GLuint shaderProgramID;
 float delta;
-int width = 800;
-int height = 600;
+int width = 1920;
+int height = 1200;
 
 GLfloat rotate_y = 0.0f;
 
 void display() {
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LESS); 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_LIGHTING);
@@ -57,7 +55,9 @@ void display() {
 	int matrix_location = glGetUniformLocation(shader.getProgram(), "model");
 	int view_mat_location = glGetUniformLocation(shader.getProgram(), "view");
 	int proj_mat_location = glGetUniformLocation(shader.getProgram(), "projection");
-	
+	int light_pos_location = glGetUniformLocation(shader.getProgram(), "lightPos");
+	int view_pos_location = glGetUniformLocation(shader.getProgram(), "viewPos");
+
 	// Root of the Hierarchy
 	mat4 view = camera.getView();
 	mat4 persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1, 100.0);
@@ -66,24 +66,31 @@ void display() {
 	// update uniforms & draw
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
+	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, light.getLocation().m);
+	glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
 
 	// draw obj
 	model = identity_mat4();
-	model = scale(model, vec3(0.2f, 0.2f, 0.2f));
+	//model = scale(model, vec3(0.2f, 0.2f, 0.2f));
 	model = rotate_y_deg(model, rotate_y);
+	model = translate(model, vec3(0.0f, -2.5f, 0.0f));
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model.m);
 	man.draw(shader);
 
-	// draw box light
+	// draw ground
 	model = identity_mat4();
-	model = translate(model, vec3(2.5f, 0.0f, 0.0f));
+	model = rotate_x_deg(model, -90.0f);
+	model = translate(model, vec3(0.0f, -5.0f, 0.0f));
 	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model.m);
-	light.draw(shader);
+
+	ground.draw(shader);
 
 	glutSwapBuffers();
 }
 
 void updateScene() {
+	//glutWarpPointer(width / 2, height / 2);
+
 	// Placeholder code, if you want to work with framerate
 	// Wait until at least 16ms passed since start of last frame (Effectively caps framerate at ~60fps)
 	static DWORD  last_time = 0;
@@ -98,20 +105,15 @@ void updateScene() {
 	glutPostRedisplay();
 }
 
-void init()
-{
+void init() {
 	//set up shaders
 	shader = Shader(
 		(GLchar*)File::getAbsoluteShaderPath("simpleShader.vert").c_str(),
 		(GLchar*)File::getAbsoluteShaderPath("simpleShader.frag").c_str());
 
-	lightShader = Shader(
-		(GLchar*)File::getAbsoluteShaderPath("lightingShader.vert").c_str(),
-		(GLchar*)File::getAbsoluteShaderPath("lightingShader.frag").c_str());
-
 	//set up objects
 	man = Model((GLchar*)File::getAbsoluteModelPath(MESH_NANOSUIT).c_str());
-	light = Model((GLchar*)File::getAbsoluteModelPath(MESH_BOX).c_str());
+	ground = Model((GLchar*)File::getAbsoluteModelPath(MESH_PLANE).c_str());
 }
 
 // Placeholder code for the keypress
@@ -153,6 +155,8 @@ int main(int argc, char** argv) {
 	glutPassiveMotionFunc(mouseMove);
 	glutMouseWheelFunc(mouseRoll);
 
+	//hide cursor for camera
+	glutSetCursor(GLUT_CURSOR_NONE);
 	glutFullScreen();
 
 	// A call to glewInit() must be done after glut is initialized!
