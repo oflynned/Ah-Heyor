@@ -60,6 +60,9 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h">

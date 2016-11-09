@@ -10,16 +10,16 @@ private:
 	vec3 scale_tuple = vec3(1.0f, 1.0f, 1.0f);
 
 	float rot_x = 0.0f, rot_y = 0.0f, rot_z = 0.0f;
-	float scale_coeff = 1.0f;
 
 	mat4 modelMat;
 	Model model;
-	Shader shader;
 
 public:
-	GameObject(vec3 pos, Shader shader) {
+	GameObject() {}
+	GameObject(vec3 pos, std::string meshName, float scale_coeff) {
 		this->pos = pos;
-		this->shader = shader;
+		this->model = Model((GLchar*)File::getAbsoluteModelPath(meshName).c_str());
+		this->scale_tuple = vec3(scale_coeff, scale_coeff, scale_coeff);
 	}
 
 	virtual ~GameObject() {}
@@ -27,10 +27,9 @@ public:
 	mat4 getModelMat() { return this->modelMat; }
 	vec3 getPos() { return this->pos; }
 
-	void update() {
-		scale_tuple = vec3(scale_coeff, scale_coeff, scale_coeff);
-
+	void update(bool isFlip = false) {
 		modelMat = identity_mat4();
+		modelMat = isFlip ? rotate_x_deg(modelMat, -90.0f) : modelMat;
 		modelMat = rotate_x_deg(modelMat, rot_x);
 		modelMat = rotate_y_deg(modelMat, rot_y);
 		modelMat = rotate_z_deg(modelMat, rot_z);
@@ -38,7 +37,7 @@ public:
 		modelMat = translate(modelMat, pos);
 	}
 
-	void draw(int mat_loc) {
+	void draw(Shader& shader, int mat_loc) {
 		glUniformMatrix4fv(mat_loc, 1, GL_FALSE, modelMat.m);
 		model.draw(shader);
 	}

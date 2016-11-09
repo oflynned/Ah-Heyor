@@ -25,7 +25,7 @@ private:
 	}
 
 public:
-	Camera(vec3 pos = vec3(3.0f, 3.0f, 3.0f)) {
+	Camera(vec3 pos = vec3(0.0f, 2.0f, 0.0f)) {
 		this->pos = pos;
 		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
 		this->right = vec3(0.0f, 0.0f, -1.0f);
@@ -47,7 +47,7 @@ public:
 	}
 
 	void keypress(unsigned char key, float delta) {
-		float velocity = speed * delta;
+		/*float velocity = speed * delta;
 		switch (key) {
 		case 'w':
 			this->pos += this->front * velocity;
@@ -61,7 +61,7 @@ public:
 		case 'd':
 			this->pos += this->right * velocity;
 			break;
-		}
+		}*/
 
 		//this->pos.v[1] = 0.0f;
 		//this->front.v[1] = 0.0f;
@@ -76,8 +76,8 @@ public:
 
 		if (constrained) {
 			// prevent gimbal lock
-			if (this->pitch > 45.0f) this->pitch = 45.0f;
-			if (this->pitch < -45.0f) this->pitch = -45.0f;
+			if (this->pitch > 89.0f) this->pitch = 89.0f;
+			if (this->pitch < -89.0f) this->pitch = -89.0f;
 		}
 
 		updateVectors();

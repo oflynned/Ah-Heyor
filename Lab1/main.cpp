@@ -19,6 +19,8 @@
 #include "Light.cpp"
 #include "File.cpp"
 #include "Camera.cpp"
+#include "Player.cpp"
+#include "Scene.cpp"
 
 #include "GLIncludes.h"
 
@@ -28,9 +30,11 @@
 using namespace std;
 
 Shader shader;
-Model man, ground;
 Camera camera;
+
 Light light(vec3(0.0f, -4.0f, 0.0f));
+Player player;
+Scene scene;
 
 float last_x = 0.0f, last_y = 0.0f;
 
@@ -68,22 +72,9 @@ void display() {
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, light.getLocation().m);
 	glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
-
-	// draw obj
-	model = identity_mat4();
-	//model = scale(model, vec3(0.2f, 0.2f, 0.2f));
-	model = rotate_y_deg(model, rotate_y);
-	model = translate(model, vec3(0.0f, -2.5f, 0.0f));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model.m);
-	man.draw(shader);
-
-	// draw ground
-	model = identity_mat4();
-	model = rotate_x_deg(model, -90.0f);
-	model = translate(model, vec3(0.0f, -5.0f, 0.0f));
-	glUniformMatrix4fv(matrix_location, 1, GL_FALSE, model.m);
-
-	ground.draw(shader);
+	
+	player.draw(shader, matrix_location);
+	scene.draw(shader, matrix_location);
 
 	glutSwapBuffers();
 }
@@ -99,6 +90,9 @@ void updateScene() {
 	if (delta > 0.03f) delta = 0.03f;
 	last_time = curr_time;
 
+	scene.update(true);
+	player.update();
+
 	// rotate the model slowly around the y axis
 	rotate_y += 0.05f;
 	// Draw the next frame
@@ -106,14 +100,14 @@ void updateScene() {
 }
 
 void init() {
-	//set up shaders
-	shader = Shader(
-		(GLchar*)File::getAbsoluteShaderPath("simpleShader.vert").c_str(),
-		(GLchar*)File::getAbsoluteShaderPath("simpleShader.frag").c_str());
-
 	//set up objects
-	man = Model((GLchar*)File::getAbsoluteModelPath(MESH_NANOSUIT).c_str());
-	ground = Model((GLchar*)File::getAbsoluteModelPath(MESH_PLANE).c_str());
+	//man = Model((GLchar*)File::getAbsoluteModelPath(MESH_NANOSUIT).c_str());
+
+	player = Player(vec3(0.0f, -2.5f, 0.0f), MESH_NANOSUIT);
+	scene = Scene(vec3(0.0f, -3.0f, 0.0f), MESH_PLANE);
+
+	shader = Shader((GLchar*)File::getAbsoluteShaderPath("simpleShader.vert").c_str(),
+		(GLchar*)File::getAbsoluteShaderPath("simpleShader.frag").c_str());
 }
 
 // Placeholder code for the keypress
@@ -124,6 +118,7 @@ void keypress(unsigned char key, int x, int y) {
 	}
 
 	camera.keypress(key, delta);
+	player.onKey(key);
 }
 
 void mouseRoll(int button, int dir, int x, int y) {
