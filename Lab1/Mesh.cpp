@@ -89,7 +89,7 @@ public:
 		GLuint diffuse_no = 1, specular_no = 1, normal_no = 1, height_no = 1;
 		std::string number;
 
-		for (auto i = 0; i < this->textures.size(); i++) {
+		for (GLuint i = 0; i < this->textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 
 			std::stringstream ss;
@@ -106,7 +106,8 @@ public:
 
 			number = ss.str();
 
-			glUniform1f(glGetUniformLocation(shader.getProgram(), (name + number).c_str()), i);
+			GLuint material_location = glGetUniformLocation(shader.getProgram(), (name + number).c_str());
+			glUniform1f(material_location, i);
 			glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
 		}
 

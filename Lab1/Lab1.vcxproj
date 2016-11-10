@@ -39,8 +39,6 @@
   <ItemGroup>
     <None Include="Shaders\lightBulb.frag" />
     <None Include="Shaders\lightBulb.vert" />
-    <None Include="Shaders\lightingShader.frag" />
-    <None Include="Shaders\lightingShader.vert" />
     <None Include="Shaders\simpleShader.frag" />
     <None Include="Shaders\simpleShader.vert" />
   </ItemGroup>

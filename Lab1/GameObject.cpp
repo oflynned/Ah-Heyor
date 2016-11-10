@@ -27,11 +27,10 @@ public:
 	mat4 getModelMat() { return this->modelMat; }
 	vec3 getPos() { return this->pos; }
 
-	void update(bool isFlip = false) {
+	void update(float cameraRot = 0.0f, bool isFlip = false) {
 		modelMat = identity_mat4();
-		modelMat = isFlip ? rotate_x_deg(modelMat, -90.0f) : modelMat;
-		modelMat = rotate_x_deg(modelMat, rot_x);
-		modelMat = rotate_y_deg(modelMat, rot_y);
+		modelMat = isFlip ? rotate_x_deg(modelMat, -90.0f) : rotate_x_deg(modelMat, rot_x);
+		modelMat = cameraRot != 0.0f ? rotate_y_deg(modelMat, cameraRot) : rotate_y_deg(modelMat, rot_y);
 		modelMat = rotate_z_deg(modelMat, rot_z);
 		modelMat = scale(modelMat, scale_tuple);
 		modelMat = translate(modelMat, pos);
@@ -51,6 +50,10 @@ public:
 	void rotate(float rotation) {
 		this->rot_y += rotation;
 	}
+
+	float getXRot() { return this->rot_x; }
+	float getYRot() { return this->rot_y; }
+	float getZRot() { return this->rot_z; }
 
 	virtual void onKey(unsigned char key) = 0;
 };

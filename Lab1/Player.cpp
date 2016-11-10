@@ -13,16 +13,16 @@ public:
 	void onKey(unsigned char key) override {
 		switch (key) {
 		case 'w':
-			translateObject(vec3(0.0f, 0.0f, 1.0f));
+			translateObject(vec3(0.0f, 0.0f, 0.5f));
 			break;
 		case 's':
-			translateObject(vec3(0.0f, 0.0f, -1.0f));
+			translateObject(vec3(0.0f, 0.0f, -0.5f));
 			break;
 		case 'a':
-			translateObject(vec3(1.0f, 0.0f, 0.0f));
+			translateObject(vec3(0.5f, 0.0f, 0.0f));
 			break;
 		case 'd':
-			translateObject(vec3(-1.0f, 0.0f, 0.0f));
+			translateObject(vec3(-0.5f, 0.0f, 0.0f));
 			break;
 		}
 	}

@@ -34,12 +34,12 @@ private:
 	}
 
 	void processNode(aiNode* node, const aiScene* scene) {
-		for (auto i = 0; i < node->mNumMeshes; i++) {
+		for (GLuint i = 0; i < node->mNumMeshes; i++) {
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 			this->meshes.push_back(this->processMesh(mesh, scene));
 		}
 
-		for (auto i = 0; i < node->mNumChildren; i++) {
+		for (GLuint i = 0; i < node->mNumChildren; i++) {
 			this->processNode(node->mChildren[i], scene);
 		}
 	}
@@ -52,7 +52,7 @@ private:
 		vec3 vector;
 
 		//process vertex positions, normals & texture coords
-		for (auto i = 0; i < mesh->mNumVertices; i++) {
+		for (GLuint i = 0; i < mesh->mNumVertices; i++) {
 			Mesh::Vertex vertex;
 
 			//pos
@@ -82,9 +82,9 @@ private:
 		}
 
 		//process indices for each face
-		for (auto i = 0; i < mesh->mNumFaces; i++) {
+		for (GLuint i = 0; i < mesh->mNumFaces; i++) {
 			aiFace face = mesh->mFaces[i];
-			for (auto j = 0; j < face.mNumIndices; j++) {
+			for (GLuint j = 0; j < face.mNumIndices; j++) {
 				indices.push_back(face.mIndices[j]);
 			}
 		}
@@ -107,12 +107,12 @@ private:
 
 	std::vector<Mesh::Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
 		std::vector<Mesh::Texture> textures;
-		for (auto i = 0; i < mat->GetTextureCount(type); i++) {
+		for (GLuint i = 0; i < mat->GetTextureCount(type); i++) {
 			aiString str;
 			mat->GetTexture(type, i, &str);
 			GLboolean skip = false;
 
-			for (auto j = 0; j < textures_loaded.size(); j++) {
+			for (GLuint j = 0; j < textures_loaded.size(); j++) {
 				if (textures_loaded[j].path == str) {
 					textures.push_back(textures_loaded[j]);
 					skip = true;
@@ -168,7 +168,7 @@ public:
 	~Model() {}
 
 	void draw(Shader shader) {
-		for (auto i = 0; i < this->meshes.size(); i++) {
+		for (GLuint i = 0; i < this->meshes.size(); i++) {
 			this->meshes[i].draw(shader);
 		}
 	}

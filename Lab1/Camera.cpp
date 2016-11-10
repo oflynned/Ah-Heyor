@@ -1,30 +1,51 @@
 #pragma once
 
 #include "GLIncludes.h"
+#include "Player.cpp"
 
 class Camera {
 private:
-	const float YAW = -90.0f;
-	const float PITCH = 0.0f;
+	const float YAW = 0.0f;
+	const float PITCH = 20.0f;
 	const float SPEED = 60.0f;
 	const float SENSITIVITY = 0.25f;
 	const float FOV = 40.0f;
 
 	vec3 pos, front, up, worldUp, right;
-	float yaw, pitch, speed, sensitivity, fov;
+	float pitch, yaw, roll;
+	float speed, sensitivity, fov;
+
+	// 3rd person attributes where pitch == camera pitch
+	Player player;
+	float distanceFromPlayer = 10.0f;
+	float angleAroundPlayer = 0.0f;
+	vec3 playerHeight = vec3(0.0, 2.5f, 0.0f);
 
 	void updateVectors() {
 		vec3 front;
 		front.v[0] = cos(radians(this->yaw)) * cos(radians(this->pitch));
 		front.v[1] = sin(radians(this->pitch));
 		front.v[2] = sin(radians(this->yaw)) * cos(radians(this->pitch));
-		
+
 		this->front = normalise(front);
 		this->right = normalise(cross(this->front, this->worldUp));
 		this->up = normalise(cross(this->right, this->front));
 	}
 
 public:
+	Camera(Player& player, vec3 pos = vec3(0.0f, 2.0f, 0.0f)) {
+		this->player = player;
+		this->pos = pos;
+		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
+		this->right = vec3(0.0f, 0.0f, -1.0f);
+		this->yaw = YAW;
+		this->speed = SPEED;
+		this->sensitivity = SENSITIVITY;
+		this->fov = FOV;
+
+		//updateVectors();
+	}
+
 	Camera(vec3 pos = vec3(0.0f, 2.0f, 0.0f)) {
 		this->pos = pos;
 		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
@@ -38,36 +59,44 @@ public:
 	}
 	~Camera() {}
 
-	mat4 getView() { return look_at(pos, pos + front, up); }
+	void update(Player& player) { this->player = player; }
+
+	mat4 getView() { return look_at(pos, (player.getPos() + playerHeight), vec3(0.0f, 1.0f, 0.0f)); }
 	float getFOV() { return this->fov; }
+
 	void adjustFOV(float diff) {
-		if (fov < 20) fov = 20;
-		else if (fov > 60) fov = 60;
-		else fov -= diff;
+		distanceFromPlayer += diff;
 	}
 
-	void keypress(unsigned char key, float delta) {
-		/*float velocity = speed * delta;
-		switch (key) {
-		case 'w':
-			this->pos += this->front * velocity;
-			break;
-		case 's':
-			this->pos -= this->front * velocity;
-			break;
-		case 'a':
-			this->pos -= this->right * velocity;
-			break;
-		case 'd':
-			this->pos += this->right * velocity;
-			break;
-		}*/
-
-		//this->pos.v[1] = 0.0f;
-		//this->front.v[1] = 0.0f;
+	void calculatePitch(float dy) {
+		float pitch = dy * 0.1f;
+		player.rotate(pitch);
+		this->pitch -= pitch;
 	}
 
-	void mouseMove(float x_offset, float y_offset, bool constrained = true) {
+	void calculateAngleAroundPlayer(float dx) {
+		angleAroundPlayer -= dx * 0.3f;
+	}
+
+	float calcHorizontalDistance() {
+		return distanceFromPlayer * cos(radians(pitch));
+	}
+
+	float calcVerticalDistance() {
+		return distanceFromPlayer * sin(radians(pitch));
+	}
+
+	void calcCameraPos(float horizDist, float vertDist) {
+		float theta = player.getYRot() + angleAroundPlayer;
+		float offsetX = horizDist * sin(radians(theta));
+		float offsetZ = horizDist * cos(radians(theta));
+
+		pos.v[0] = player.getPos().v[0] - offsetX;
+		pos.v[1] = player.getPos().v[1] + vertDist;
+		pos.v[2] = player.getPos().v[2] - offsetZ;
+	}
+
+	void mouseMoveFirstPerson(float x_offset, float y_offset, bool constrained = true) {
 		x_offset *= this->sensitivity;
 		y_offset *= this->sensitivity;
 
@@ -82,4 +111,17 @@ public:
 
 		updateVectors();
 	}
+
+	void mouseMoveThirdPerson(float x, float y) {
+		calculateAngleAroundPlayer(x);
+		calculatePitch(y);
+
+		float horizontalDistance = calcHorizontalDistance();
+		float verticalDistance = calcVerticalDistance();
+
+		calcCameraPos(horizontalDistance, verticalDistance);
+		this->yaw = 180 - (player.getYRot() + angleAroundPlayer);
+	}
+
+	float getYaw() { return this->yaw; }
 };
