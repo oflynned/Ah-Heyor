@@ -29,8 +29,10 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Syringe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h" />

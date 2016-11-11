@@ -6,38 +6,19 @@ in LIGHTING {
 	vec2 TexCoords;
 } lighting;
 
+uniform sampler2D texture_diffuse1;
+
 out vec4 out_color;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_diffuse2;
-uniform sampler2D texture_diffuse3;
-
-uniform sampler2D texture_specular1;
-uniform sampler2D texture_specular2;
-
-uniform sampler2D texture_normal1;
-uniform sampler2D texture_normal2;
-
-uniform sampler2D texture_height1;
-uniform sampler2D texture_height2;
-
 void main() {
-	vec4 modelTexture = texture(texture_diffuse1, lighting.TexCoords) + 
-						texture(texture_diffuse2, lighting.TexCoords) + 
-						texture(texture_diffuse3, lighting.TexCoords) + 
-						texture(texture_specular1, lighting.TexCoords) + 
-						texture(texture_specular2, lighting.TexCoords) + 
-						texture(texture_normal1, lighting.TexCoords) + 
-						texture(texture_normal2, lighting.TexCoords) + 
-						texture(texture_height1, lighting.TexCoords) + 
-						texture(texture_height1, lighting.TexCoords);
+	vec4 modelTexture = texture(texture_diffuse1, lighting.TexCoords);
 	vec3 color = modelTexture.rgb;
 	
 	// ambient
-	vec3 ambient = 0.1f * color;
+	vec3 ambient = 0.01f * color;
 
 	// diffuse
 	vec3 lightDir = normalize(lightPos - lighting.Position);

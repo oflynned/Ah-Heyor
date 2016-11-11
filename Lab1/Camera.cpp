@@ -33,19 +33,6 @@ private:
 	}
 
 public:
-	Camera(Player& player, vec3 pos = vec3(0.0f, 2.0f, 0.0f)) {
-		this->player = player;
-		this->pos = pos;
-		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
-		this->right = vec3(0.0f, 0.0f, -1.0f);
-		this->yaw = YAW;
-		this->speed = SPEED;
-		this->sensitivity = SENSITIVITY;
-		this->fov = FOV;
-
-		//updateVectors();
-	}
-
 	Camera(vec3 pos = vec3(0.0f, 2.0f, 0.0f)) {
 		this->pos = pos;
 		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
@@ -57,6 +44,18 @@ public:
 
 		updateVectors();
 	}
+
+	Camera(const Player& player, vec3 pos = vec3(0.0f, 2.0f, 0.0f)) {
+		this->player = player;
+		this->pos = pos;
+		this->worldUp = vec3(0.0f, 1.0f, 0.0f);
+		this->right = vec3(0.0f, 0.0f, -1.0f);
+		this->yaw = YAW;
+		this->speed = SPEED;
+		this->sensitivity = SENSITIVITY;
+		this->fov = FOV;
+	}
+
 	~Camera() {}
 
 	void update(Player& player) { this->player = player; }
@@ -65,13 +64,11 @@ public:
 	float getFOV() { return this->fov; }
 
 	void adjustFOV(float diff) {
-		distanceFromPlayer += diff;
+		distanceFromPlayer -= diff * 0.3f;
 	}
 
 	void calculatePitch(float dy) {
-		float pitch = dy * 0.1f;
-		player.rotate(pitch);
-		this->pitch -= pitch;
+		this->pitch -= dy * 0.1f;
 	}
 
 	void calculateAngleAroundPlayer(float dx) {

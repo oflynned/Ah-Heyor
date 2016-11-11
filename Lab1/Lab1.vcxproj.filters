@@ -63,6 +63,12 @@
     <ClCompile Include="Player.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Syringe.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenery.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h">

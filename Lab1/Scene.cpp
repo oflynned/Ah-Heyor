@@ -11,4 +11,6 @@ public:
 	~Scene() {}
 
 	void onKey(unsigned char key) override {}
+
+	void generateTerrain() {}
 };

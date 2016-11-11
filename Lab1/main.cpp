@@ -21,20 +21,25 @@
 #include "Camera.cpp"
 #include "Player.cpp"
 #include "Scene.cpp"
+#include "Scenery.cpp"
 
 #include "GLIncludes.h"
 
 #define MESH_NANOSUIT "nanosuit/nanosuit.obj"
-#define MESH_PLANE "plane.dae"
-#define MESH_BOX "box.dae"
+#define MESH_ROCK "rock/rock.obj"
+#define MESH_SYRINGE "syringe/syringe.obj"
+#define MESH_TEAPOT "teapot/teapot.obj"
+#define MESH_PLANE "ground/ground.obj"
+#define MESH_BOX "box/box.obj"
 
 using namespace std;
 
-Shader shader;
-Camera camera;
+Shader shader, bulbShader;
 
+Camera camera;
 Light light;
 Player player;
+Scenery rock, teapot, syringe;
 Scene scene;
 
 float last_x = 0.0f, last_y = 0.0f;
@@ -44,37 +49,37 @@ float delta;
 int width = 1920;
 int height = 1200;
 
-GLfloat rotate_y = 0.0f;
-
 void display() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	mat4 view = camera.getView();
+	mat4 persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1, 100.0);
+	mat4 model = identity_mat4();
+	
 	shader.use();
 
-	// Declare your uniform variables that will be used in your shader
 	int matrix_location = glGetUniformLocation(shader.getProgram(), "model");
 	int view_mat_location = glGetUniformLocation(shader.getProgram(), "view");
 	int proj_mat_location = glGetUniformLocation(shader.getProgram(), "projection");
 	int light_pos_location = glGetUniformLocation(shader.getProgram(), "lightPos");
 	int view_pos_location = glGetUniformLocation(shader.getProgram(), "viewPos");
 
-	// Root of the Hierarchy
-	mat4 view = camera.getView();
-	mat4 persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1, 100.0);
-	mat4 model = identity_mat4();
-
-	// update uniforms & draw
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
-	//glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, light.getLocation().m);
-	//glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
+	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, light.getLocation().m);
+	glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
+
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 	
-	light.draw(shader, matrix_location);
-	scene.draw(shader, matrix_location);
 	player.draw(shader, matrix_location);
+	rock.draw(shader, matrix_location);
+	syringe.draw(shader, matrix_location);
+	teapot.draw(shader, matrix_location);
+	scene.draw(shader, matrix_location);
 
 	glutSwapBuffers();
 }
@@ -88,24 +93,35 @@ void updateScene() {
 	if (delta > 0.03f) delta = 0.03f;
 	last_time = curr_time;
 
-	scene.update(0.0f, true);
+	scene.update();
+
+	rock.update();
+	syringe.update();
+	teapot.update();
 
 	camera.update(player);
-	player.update(camera.getYaw(), false);
+	player.update();
 
 	// Draw the next frame
 	glutPostRedisplay();
 }
 
 void init() {
+	bulbShader = Shader((GLchar*)File::getAbsoluteShaderPath("lightBulb.vert").c_str(),
+		(GLchar*)File::getAbsoluteShaderPath("lightBulb.frag").c_str());
+
 	shader = Shader((GLchar*)File::getAbsoluteShaderPath("simpleShader.vert").c_str(),
 		(GLchar*)File::getAbsoluteShaderPath("simpleShader.frag").c_str());
 
-	light = Light(vec3(5.0f, 1.0f, 5.0f), MESH_BOX, 1.0f);
-	player = Player(vec3(0.0f, -2.5f, 0.0f), MESH_NANOSUIT);
-	Camera camera(player);
+	rock = Scenery(vec3(5.0f, -1.0f, 5.0f), MESH_ROCK);
+	syringe = Scenery(vec3(5.0f, -1.0f, 0.0f), MESH_SYRINGE);
+	teapot = Scenery(vec3(-5.0f, -1.0f, -5.0f), MESH_TEAPOT);
 
-	scene = Scene(vec3(0.0f, -2.5f, 0.0f), MESH_PLANE);
+	light = Light(vec3(0.0f, 0.0f, 5.0f), MESH_BOX);
+	player = Player(vec3(0.0f, -2.5f, 0.0f), MESH_NANOSUIT);
+	scene = Scene(vec3(0.0f, -2.6f, 0.0f), MESH_PLANE);
+
+	Camera camera = Camera(player);
 }
 
 // Placeholder code for the keypress
@@ -151,6 +167,8 @@ int main(int argc, char** argv) {
 	//hide cursor for camera
 	glutSetCursor(GLUT_CURSOR_NONE);
 	glutFullScreen();
+
+	glShadeModel(GL_SMOOTH);
 
 	// A call to glewInit() must be done after glut is initialized!
 	GLenum res = glewInit();
