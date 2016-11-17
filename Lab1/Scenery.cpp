@@ -9,6 +9,4 @@ public:
 
 	}
 	~Scenery() {}
-
-	void onKey(unsigned char key) override {}
 };

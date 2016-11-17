@@ -22,6 +22,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\maths_funcs.cpp" />
@@ -32,17 +34,22 @@
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Syringe.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h" />
     <ClInclude Include="Math\maths_funcs.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\lightBulb.frag" />
-    <None Include="Shaders\lightBulb.vert" />
+    <None Include="Shaders\skybox.frag" />
+    <None Include="Shaders\skybox.vert" />
     <None Include="Shaders\simpleShader.frag" />
     <None Include="Shaders\simpleShader.vert" />
+    <None Include="Shaders\text.frag" />
+    <None Include="Shaders\text.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{435032E1-4FB7-48C4-A343-F59156286B38}</ProjectGuid>

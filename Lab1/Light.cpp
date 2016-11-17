@@ -7,7 +7,8 @@ private:
 	bool isVisible = true;
 public:
 	Light() {}
-	Light(vec3 pos, std::string meshName, float scale_coeff = 1.0f) : GameObject(pos, meshName, scale_coeff) {
+	Light(vec3 pos, std::string meshName, float scale_coeff = 1.0f) 
+		: GameObject(pos, meshName, scale_coeff) {
 
 	}
 	
@@ -21,6 +22,5 @@ public:
 		location = translate(location, getPos());
 		return location;
 	}
-
-	void onKey(unsigned char key) override {}
 };
+

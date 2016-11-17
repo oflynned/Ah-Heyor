@@ -86,34 +86,28 @@ public:
 	~Mesh() {}
 
 	void draw(Shader shader) {
-		GLuint diffuse_no = 1, specular_no = 1, normal_no = 1, height_no = 1;
+		GLuint diffuse_no = 1;
 		std::string number;
 
-		for (GLuint i = 0; i < this->textures.size(); i++) {
+		for (GLuint i = 0; i < textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 
 			std::stringstream ss;
 			std::string number;
-			std::string name = this->textures[i].type;
+			std::string name = textures[i].type;
 			if (name == "texture_diffuse")
 				ss << diffuse_no++; 
-			else if (name == "texture_specular")
-				ss << specular_no++; 
-			else if (name == "texture_normal")
-				ss << normal_no++;
-			else if (name == "texture_height")
-				ss << height_no++;
 
 			number = ss.str();
 
 			GLuint material_location = glGetUniformLocation(shader.getProgram(), (name + number).c_str());
 			glUniform1f(material_location, i);
-			glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 
 		// draw to bound vertex array
-		glBindVertexArray(this->vao);
-		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(vao);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 

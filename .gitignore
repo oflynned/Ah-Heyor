@@ -6,6 +6,7 @@ Plugins/
 Models/
 Release/
 Debug/
+Sounds/
 
 # User-specific files
 *.suo

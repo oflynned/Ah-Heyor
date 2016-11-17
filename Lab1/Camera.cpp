@@ -14,12 +14,13 @@ private:
 	vec3 pos, front, up, worldUp, right;
 	float pitch, yaw, roll;
 	float speed, sensitivity, fov;
+	float theta;
 
 	// 3rd person attributes where pitch == camera pitch
 	Player player;
 	float distanceFromPlayer = 10.0f;
 	float angleAroundPlayer = 0.0f;
-	vec3 playerHeight = vec3(0.0, 2.5f, 0.0f);
+	vec3 playerHeight = vec3(0.0, 3.0f, 0.0f);
 
 	void updateVectors() {
 		vec3 front;
@@ -66,25 +67,9 @@ public:
 	void adjustFOV(float diff) {
 		distanceFromPlayer -= diff * 0.3f;
 	}
-
-	void calculatePitch(float dy) {
-		this->pitch -= dy * 0.1f;
-	}
-
-	void calculateAngleAroundPlayer(float dx) {
-		angleAroundPlayer -= dx * 0.3f;
-	}
-
-	float calcHorizontalDistance() {
-		return distanceFromPlayer * cos(radians(pitch));
-	}
-
-	float calcVerticalDistance() {
-		return distanceFromPlayer * sin(radians(pitch));
-	}
-
+		
 	void calcCameraPos(float horizDist, float vertDist) {
-		float theta = player.getYRot() + angleAroundPlayer;
+		theta = player.getYRot() + angleAroundPlayer;
 		float offsetX = horizDist * sin(radians(theta));
 		float offsetZ = horizDist * cos(radians(theta));
 
@@ -109,16 +94,18 @@ public:
 		updateVectors();
 	}
 
-	void mouseMoveThirdPerson(float x, float y) {
-		calculateAngleAroundPlayer(x);
-		calculatePitch(y);
+	void mouseMoveThirdPerson(float dx, float dy) {
+		this->angleAroundPlayer -= dx * 0.3f;
+		this->pitch -= dy * 0.1f;
 
-		float horizontalDistance = calcHorizontalDistance();
-		float verticalDistance = calcVerticalDistance();
+		float horizontalDistance = distanceFromPlayer * cos(radians(pitch));
+		float verticalDistance = distanceFromPlayer * sin(radians(pitch));
 
 		calcCameraPos(horizontalDistance, verticalDistance);
+
 		this->yaw = 180 - (player.getYRot() + angleAroundPlayer);
 	}
 
 	float getYaw() { return this->yaw; }
+	float getTheta() { return this->theta; }
 };

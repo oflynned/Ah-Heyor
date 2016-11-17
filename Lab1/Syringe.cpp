@@ -9,6 +9,4 @@ public:
 
 	}
 	~Syringe() {}
-
-	void onKey(unsigned char key) override {}
 };

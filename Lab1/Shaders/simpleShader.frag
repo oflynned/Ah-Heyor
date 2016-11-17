@@ -18,7 +18,7 @@ void main() {
 	vec3 color = modelTexture.rgb;
 	
 	// ambient
-	vec3 ambient = 0.01f * color;
+	vec3 ambient = 0.5f * color;
 
 	// diffuse
 	vec3 lightDir = normalize(lightPos - lighting.Position);

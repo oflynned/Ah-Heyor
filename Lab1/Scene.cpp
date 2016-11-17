@@ -3,6 +3,8 @@
 
 class Scene : public GameObject {
 private:
+	GLfloat* terrain;
+
 public:
 	Scene() {}
 	Scene(vec3 pos, std::string meshName, float scale_coeff = 1.0f) : GameObject(pos, meshName, scale_coeff) {
@@ -10,7 +12,10 @@ public:
 	}
 	~Scene() {}
 
-	void onKey(unsigned char key) override {}
+	void generateTerrain() {
 
-	void generateTerrain() {}
+	}
+
+	GLfloat* getTerrain() { return this->terrain; }
+
 };

@@ -25,6 +25,9 @@
     <Filter Include="Objects">
       <UniqueIdentifier>{d5947007-7bf4-4442-bad2-c143a21bd6be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Miscellaneous">
+      <UniqueIdentifier>{4797cef5-4eaf-4987-a712-fed840fd37c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +72,21 @@
     <ClCompile Include="Scenery.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
+      <Filter>Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Miscellaneous</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h">
@@ -85,10 +103,16 @@
     <None Include="Shaders\simpleShader.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\lightBulb.frag">
+    <None Include="Shaders\skybox.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\lightBulb.vert">
+    <None Include="Shaders\skybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\text.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\text.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

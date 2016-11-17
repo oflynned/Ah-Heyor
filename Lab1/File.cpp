@@ -8,6 +8,14 @@ public:
 		return "U:/CS4052/Lab1/Lab1/Models/" + path;
 	}
 
+	static const std::string getAbsoluteTexturesPath(std::string path) {
+		return "U:/CS4052/Lab1/Lab1/Textures/" + path;
+	}
+
+	static const std::string getAbsoluteSoundPath(std::string path) {
+		return "U:/CS4052/Lab1/Lab1/Sounds/" + path;
+	}
+
 	static const std::string getAbsoluteShaderPath(const std::string path) {
 		return "U:/CS4052/Lab1/Lab1/Shaders/" + path;
 	}
