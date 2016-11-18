@@ -11,7 +11,13 @@ public:
 		rambling, sfx, music
 	};
 
-private:
+private:	
+	const int RAMBLING_SIZE = 8;
+	const int MUSIC_SIZE = 1;
+	const int SFX_SIZE = 4;
+
+	static const const int BURP = 3;
+
 	std::string ramblingsVals[8] = {
 		"Bob's Your Uncle",
 		"Dya Know What I Mean",
@@ -27,15 +33,12 @@ private:
 		"Hardbass"
 	};
 
-	std::string sfxVals[3] = {
+	std::string sfxVals[4] = {
 		"Police",
 		"Picking Up",
-		"Running"
+		"Running",
+		"Burp"
 	};
-
-	const int NUM_RAMBLINGS = 8;
-	const int NUM_MUSIC = 1;
-	const int NUM_SFX = 3;
 
 	int currWait = 0, waitUntil = 0;
 
@@ -51,28 +54,30 @@ private:
 	}
 
 public:
+	static const int BURP_SND = 3;
+
 	Sound() {}
 	~Sound() {}
 
-	void playAudio(Sounds sounds) {
+	void playAudio(Sounds sounds, int index = -1) {
 		std::string sound;
 		int element = 0;
 
 		switch (sounds) {
 		case Sounds::rambling:
-			element = generateRand(NUM_RAMBLINGS);
+			element = generateRand(RAMBLING_SIZE);
 			sound = File::getAbsoluteSoundPath(
 				"Ramblings/" + ramblingsVals[element] + ".wav");
 			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP);
 			break;
 		case Sounds::music:
-			element = generateRand(NUM_MUSIC);
+			element = generateRand(MUSIC_SIZE);
 			sound = File::getAbsoluteSoundPath(
 				"Music/" + musicVals[element] + ".wav");
 			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_LOOP | SND_NOSTOP);
 			break;
 		case Sounds::sfx:
-			element = generateRand(NUM_SFX);
+			element = index == -1 ? generateRand(SFX_SIZE) : index;
 			sound = File::getAbsoluteSoundPath(
 				"Sfx/" + sfxVals[element] + ".wav");
 			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP);

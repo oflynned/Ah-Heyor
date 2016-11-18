@@ -66,9 +66,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Syringe.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Scenery.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
@@ -85,6 +82,12 @@
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
+      <Filter>Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="Cans.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager.cpp">
       <Filter>Miscellaneous</Filter>
     </ClCompile>
   </ItemGroup>

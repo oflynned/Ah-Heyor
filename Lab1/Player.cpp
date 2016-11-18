@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.cpp"
+#include "Cans.cpp"
 
 class Player : public GameObject {
 public:

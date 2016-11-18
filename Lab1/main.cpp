@@ -17,9 +17,10 @@
 #include "Player.cpp"
 #include "Scene.cpp"
 #include "Scenery.cpp"
-#include "Syringe.cpp"
+#include "Cans.cpp"
 #include "Skybox.cpp"
 #include "Sound.cpp"
+#include "Manager.cpp"
 
 #include "GLIncludes.h"
 
@@ -31,10 +32,10 @@
 #define MESH_ROCK "rock/rock.obj"
 #define MESH_TREE "pine/pine.obj"
 #define MESH_CAR ""
-#define MESH_CANS ""
+#define MESH_CANS "can/can.obj"
 
 //enable debugging
-#define DEV_MODE true
+#define DEV_MODE false
 
 using namespace std;
 
@@ -49,7 +50,7 @@ Skybox skybox;
 
 std::vector<Scenery> trees;
 std::vector<Scenery> rocks;
-std::vector<Syringe> syringes;
+std::vector<Cans> cans;
 
 Sound ramblings, music, sfx;
 
@@ -86,11 +87,14 @@ void display() {
 
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
-	
+
 	player.draw(shader, matrix_location);
 	rock.draw(shader, matrix_location);
 	tree.draw(shader, matrix_location);
 	scene.draw(shader, matrix_location);
+
+	for (int i = 0; i < cans.size(); i++)
+		cans[i].draw(shader, matrix_location);
 
 	// skybox time
 	glDepthMask(GL_FALSE);
@@ -100,12 +104,12 @@ void display() {
 	proj_mat_location = glGetUniformLocation(skyboxShader.getProgram(), "projection");
 	int skybox_tex_location = glGetUniformLocation(skyboxShader.getProgram(), "skybox");
 
-	persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1f, 400.0f);
+	persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1f, 1000.0f);
 
 	// cube it up
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, camera.getView().m);
-	
+
 	skybox.draw();
 	glDepthMask(GL_TRUE);
 
@@ -126,8 +130,12 @@ void updateScene() {
 
 	camera.update(player);
 	player.update(camera.getYaw(), true);
-	
-	if(!DEV_MODE)
+
+	for (int i = 0; i < cans.size(); i++) {
+		cans[i].update();
+	}
+
+	if (!DEV_MODE)
 		ramblings.shouldPlay();
 
 	// Draw the next frame
@@ -146,6 +154,12 @@ void init() {
 	tree = Scenery(vec3(-5.0f, -0.5f, 5.0f), MESH_TREE);
 	scene = Scene(vec3(0.0f, -1.5f, 0.0f), MESH_GROUND, 10.0f);
 
+	for (int i = 0; i < 10; i++) {
+		srand((unsigned)time(0));
+		cans.push_back(Cans(vec3((float) (rand() % 100), 
+			-0.25f, (float)(rand() % 100)), MESH_CANS));
+	}
+
 	Camera camera = Camera(player);
 
 	if (!DEV_MODE)
@@ -161,8 +175,18 @@ void keypress(unsigned char key, int x, int y) {
 		glutExit();
 	}
 
+	// remove can from vector
+	if (key == 'e') {
+		for (int i = 0; i < cans.size(); i++) {
+			if (player.tolerance(cans[i])) {
+				cans.erase(cans.begin() + i);
+				sfx.playAudio(Sound::sfx, Sound::BURP_SND);
+			}
+		}
+	}
+
 	if (key == 'q') {
-		sfx.playAudio(Sound::sfx);
+		sfx.playAudio(Sound::sfx, Sound::BURP_SND);
 	}
 
 	player.onKey(key, camera.getTheta());
@@ -173,22 +197,20 @@ void releaseKeypress(unsigned char key, int x, int y) {
 }
 
 void mouseRoll(int button, int dir, int x, int y) {
-	camera.adjustFOV((float) dir);
+	camera.adjustFOV((float)dir);
 }
 
 void mouseMove(int x, int y) {
-
 	float xoffset = x - last_x;
 	float yoffset = last_y - y;
 
-	last_x = (float) x;
-	last_y = (float) y;
+	last_x = (float)x;
+	last_y = (float)y;
 
 	camera.mouseMoveThirdPerson(xoffset, yoffset);
 }
 
 int main(int argc, char** argv) {
-
 	// Set up the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

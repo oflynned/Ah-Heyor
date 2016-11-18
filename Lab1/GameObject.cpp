@@ -22,7 +22,7 @@ public:
 		this->scale_tuple = vec3(scale_coeff, scale_coeff, scale_coeff);
 	}
 
-	virtual ~GameObject() {}
+	~GameObject() {}
 
 	mat4 getModelMat() { return this->modelMat; }
 	vec3 getPos() { return this->pos; }
@@ -60,4 +60,11 @@ public:
 	virtual void onKey(unsigned char key) {}
 	virtual void onKey(unsigned char key, float cameraRot) {}
 	virtual void onKeyRelease(unsigned char key, float cameraRot) {}
+
+	bool tolerance(GameObject gameObject) {
+		return (getPos().v[0] < gameObject.getPos().v[0] + 2) &&
+			(getPos().v[0] > gameObject.getPos().v[0] - 2) &&
+			(getPos().v[2] < gameObject.getPos().v[2] + 2) &&
+			(getPos().v[2] > gameObject.getPos().v[2] - 2);
+	}
 };
