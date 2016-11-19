@@ -110,6 +110,14 @@ void drawObjects() {
 	int light_pos_location = glGetUniformLocation(shader.getProgram(), "lightPos");
 	int view_pos_location = glGetUniformLocation(shader.getProgram(), "viewPos");
 
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
+	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, vec3(5.0, 50.0, 5.0).v);
+	glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
+
+	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
+	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
+
 	// fog
 	if (toggleFog) {
 		int fog_sky_colour_location = glGetUniformLocation(shader.getProgram(), "skyColour");
@@ -117,14 +125,6 @@ void drawObjects() {
 		glUniform3fv(fog_sky_colour_location, 1, vec3(0.5f, 0.5f, 0.5f).v);
 		glUniform1i(should_toggle_fog_location, toggleFog);
 	}
-
-	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
-	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
-	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, light.getLocation().m);
-	glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
-
-	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
-	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 
 	player.draw(shader, matrix_location);
 	rock.draw(shader, matrix_location);
@@ -263,6 +263,7 @@ void keypress(unsigned char key, int x, int y) {
 
 	if (key == 'f') {
 		toggleFog = !toggleFog;
+		std::cout << toggleFog << std::endl;
 	}
 
 	player.onKey(key, camera.getTheta());

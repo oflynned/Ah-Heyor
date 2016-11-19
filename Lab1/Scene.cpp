@@ -1,12 +1,12 @@
 #pragma once
 #include "GameObject.cpp"
+#include "Generator.cpp"
 #include <thread>
 
 #define S_SIZE 800
 
 class Scene : public GameObject {
 private:
-	/*
 	GLfloat terrain[VERTEX_COUNT][VERTEX_COUNT];
 
 	void generateGround() {
@@ -54,7 +54,7 @@ private:
 		float heightU = getHeight(x, z + 1, generator);
 
 		return vec3(heightL - heightR, 1.0f, heightD - heightU);
-	}*/
+	}
 	
 public:
 	Scene() {}
@@ -63,5 +63,5 @@ public:
 	}
 	~Scene() {}
 
-	GLfloat getMesh() {}
+	//GLfloat getMesh() { return this->terrain; }
 };

@@ -26,7 +26,7 @@ void main() {
 	vec3 ambient = 0.3f * color;
 
 	// diffuse
-	vec3 lightDir = normalize(lightPos - lighting.Position);
+	vec3 lightDir = normalize(lighting.Position);
 	vec3 normal = normalize(lighting.Normal);
 	float diff = max(dot(lightDir, normal), 0.0f);
 	vec3 diffuse = diff * color;
@@ -43,7 +43,6 @@ void main() {
 	out_color = vec4(ambient + diffuse + specular, 1.0f);
 
 	//fog
-	if(toggleFog) {
+	if(toggleFog)
 		out_color = mix(vec4(skyColour, 1.0), out_color, visibility);
-	}
 }
