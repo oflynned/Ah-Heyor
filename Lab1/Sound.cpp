@@ -62,25 +62,26 @@ public:
 	void playAudio(Sounds sounds, int index = -1) {
 		std::string sound;
 		int element = 0;
+		unsigned int attributes = SND_ASYNC | SND_NOSTOP;
 
 		switch (sounds) {
 		case Sounds::rambling:
 			element = generateRand(RAMBLING_SIZE);
 			sound = File::getAbsoluteSoundPath(
 				"Ramblings/" + ramblingsVals[element] + ".wav");
-			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP);
+			sndPlaySound((const char*)sound.c_str(), attributes);
 			break;
 		case Sounds::music:
 			element = generateRand(MUSIC_SIZE);
 			sound = File::getAbsoluteSoundPath(
 				"Music/" + musicVals[element] + ".wav");
-			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_LOOP | SND_NOSTOP);
+			sndPlaySound((const char*)sound.c_str(), attributes | SND_NOSTOP);
 			break;
 		case Sounds::sfx:
 			element = index == -1 ? generateRand(SFX_SIZE) : index;
 			sound = File::getAbsoluteSoundPath(
 				"Sfx/" + sfxVals[element] + ".wav");
-			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP);
+			sndPlaySound((const char*)sound.c_str(), attributes);
 			break;
 		default:
 			break;

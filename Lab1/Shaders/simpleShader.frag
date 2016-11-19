@@ -13,12 +13,17 @@ out vec4 out_color;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 
+//fog
+in float visibility;
+uniform vec3 skyColour;
+uniform bool toggleFog;
+
 void main() {
 	vec4 modelTexture = texture(texture_diffuse1, lighting.TexCoords);
 	vec3 color = modelTexture.rgb;
 	
 	// ambient
-	vec3 ambient = 0.5f * color;
+	vec3 ambient = 0.3f * color;
 
 	// diffuse
 	vec3 lightDir = normalize(lightPos - lighting.Position);
@@ -36,4 +41,9 @@ void main() {
 
 	vec3 specular = vec3(0.3f) * spec;
 	out_color = vec4(ambient + diffuse + specular, 1.0f);
+
+	//fog
+	if(toggleFog) {
+		out_color = mix(vec4(skyColour, 1.0), out_color, visibility);
+	}
 }

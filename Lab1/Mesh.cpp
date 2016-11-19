@@ -13,45 +13,43 @@ class Mesh {
 private:
 	GLuint vao, vbo, ebo;
 
-	void setupMesh() {
-		glGenVertexArrays(1, &this->vao);
-		glGenBuffers(1, &this->vbo);
-		glGenBuffers(1, &this->ebo);
+	static const int UV = 2;
+	static const int TUPLE = 3;
 
-		glBindVertexArray(this->vao);
-		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+	static const int POS_ID = 0;
+	static const int NORM_ID = 1;
+	static const int TEX_ID = 2;
+	static const int TAN_ID = 3;
 
-		glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex),
-			&this->vertices[0], GL_STATIC_DRAW);
+	void generateMesh() {
+		glGenVertexArrays(1, &vao);
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &ebo);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint),
-			&this->indices[0], GL_STATIC_DRAW);
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-		// Vertex Positions
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			(GLvoid*)0);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-		// Vertex Normals
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+
+		// Positions
+		glEnableVertexAttribArray(POS_ID);
+		glVertexAttribPointer(POS_ID, TUPLE, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+
+		// Normals
+		glEnableVertexAttribArray(NORM_ID);
+		glVertexAttribPointer(NORM_ID, TUPLE, GL_FLOAT, GL_FALSE, sizeof(Vertex),
 			(GLvoid*)offsetof(Vertex, normal));
 
-		// Vertex Texture Coords
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			(GLvoid*)offsetof(Vertex, texCoords));
+		// Texture Coords
+		glEnableVertexAttribArray(TEX_ID);
+		glVertexAttribPointer(TEX_ID, UV, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texCoords));
 
-		// Vertex Tangent
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			(GLvoid*)offsetof(Vertex, tangent));
-
-		// Vertex Bitangent
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			(GLvoid*)offsetof(Vertex, bitangent));
+		// Tangent
+		glEnableVertexAttribArray(TAN_ID);
+		glVertexAttribPointer(TAN_ID, TUPLE, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, tangent));
 
 		glBindVertexArray(0);
 	}
@@ -62,7 +60,6 @@ public:
 		vec3 normal;
 		vec2 texCoords;
 		vec3 tangent;
-		vec2 bitangent;
 	};
 
 	struct Texture {
@@ -80,36 +77,21 @@ public:
 		this->indices = indices;
 		this->textures = textures;
 		
-		setupMesh();
+		generateMesh();
 	}
 
-	~Mesh() {}
-
 	void draw(Shader shader) {
-		GLuint diffuse_no = 1;
-		std::string number;
-
 		for (GLuint i = 0; i < textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
-
-			std::stringstream ss;
-			std::string number;
-			std::string name = textures[i].type;
-			if (name == "texture_diffuse")
-				ss << diffuse_no++; 
-
-			number = ss.str();
-
-			GLuint material_location = glGetUniformLocation(shader.getProgram(), (name + number).c_str());
+			GLuint material_location = glGetUniformLocation(shader.getProgram(), (textures[i].type + "1").c_str());
 			glUniform1f(material_location, i);
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 
-		// draw to bound vertex array
 		glBindVertexArray(vao);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 
-	GLuint getVAO() { return this->vao; }
+	GLuint getVAO() { return vao; }
 };

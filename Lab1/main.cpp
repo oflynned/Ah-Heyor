@@ -32,14 +32,18 @@
 #define MESH_ROCK "rock/rock.obj"
 #define MESH_TREE "pine/pine.obj"
 #define MESH_CAR ""
+#define MESH_BOX "box/box.obj"
 #define MESH_CANS "can/can.obj"
 
 //enable debugging
-#define DEV_MODE false
+#define DEV_MODE true
+
+//macro offset
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 using namespace std;
 
-Shader shader, skyboxShader;
+Shader shader, skyboxShader, guiShader;
 Camera camera;
 Light light;
 
@@ -52,21 +56,47 @@ std::vector<Scenery> trees;
 std::vector<Scenery> rocks;
 std::vector<Cans> cans;
 
+bool toggleFog = false;
+
 Sound ramblings, music, sfx;
 
 float last_x = 0.0f, last_y = 0.0f;
 
-GLuint shaderProgramID;
 float delta;
 int width = DEV_MODE ? 800 : 1920;
 int height = DEV_MODE ? 600 : 1080;
 
-void display() {
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void drawGUI() {
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//guiShader.use();
 
+	//draw gui 2d objects on camera plane
+	glColor3f(1, 0, 0);
+	glMatrixMode(GL_PROJECTION);
+
+	double* matrix = new double[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, matrix);
+	glLoadIdentity();
+	glOrtho(0, width, 0, height, -5, 5);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+	glLoadIdentity();
+
+	glRasterPos2i(width / 2, height / 2);
+
+	std::string text = "Hello";
+
+	for (int i = 0; i < text.size(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, (int) text.data());
+
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(matrix);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void drawObjects() {
 	mat4 view = camera.getView();
 	mat4 persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1f, 200.0f);
 	mat4 model = identity_mat4();
@@ -80,6 +110,14 @@ void display() {
 	int light_pos_location = glGetUniformLocation(shader.getProgram(), "lightPos");
 	int view_pos_location = glGetUniformLocation(shader.getProgram(), "viewPos");
 
+	// fog
+	if (toggleFog) {
+		int fog_sky_colour_location = glGetUniformLocation(shader.getProgram(), "skyColour");
+		int should_toggle_fog_location = glGetUniformLocation(shader.getProgram(), "toggleFog");
+		glUniform3fv(fog_sky_colour_location, 1, vec3(0.5f, 0.5f, 0.5f).v);
+		glUniform1i(should_toggle_fog_location, toggleFog);
+	}
+
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, light.getLocation().m);
@@ -92,19 +130,23 @@ void display() {
 	rock.draw(shader, matrix_location);
 	tree.draw(shader, matrix_location);
 	scene.draw(shader, matrix_location);
+	light.draw(shader, matrix_location);
 
 	for (int i = 0; i < cans.size(); i++)
 		cans[i].draw(shader, matrix_location);
 
-	// skybox time
+	for (int i = 0; i < rocks.size(); i++)
+		rocks[i].draw(shader, matrix_location);
+}
+
+void drawSkybox() {
 	glDepthMask(GL_FALSE);
 	skyboxShader.use();
 
-	view_mat_location = glGetUniformLocation(skyboxShader.getProgram(), "view");
-	proj_mat_location = glGetUniformLocation(skyboxShader.getProgram(), "projection");
+	int view_mat_location = glGetUniformLocation(skyboxShader.getProgram(), "view");
+	int proj_mat_location = glGetUniformLocation(skyboxShader.getProgram(), "projection");
 	int skybox_tex_location = glGetUniformLocation(skyboxShader.getProgram(), "skybox");
-
-	persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1f, 1000.0f);
+	mat4 persp_proj = perspective(camera.getFOV(), (float)width / (float)height, 0.1f, 1000.0f);
 
 	// cube it up
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
@@ -112,6 +154,21 @@ void display() {
 
 	skybox.draw();
 	glDepthMask(GL_TRUE);
+}
+
+void drawWorld() {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	drawObjects();
+	drawSkybox();
+}
+
+void display() {
+	drawWorld();
+	drawGUI();
 
 	glutSwapBuffers();
 }
@@ -130,9 +187,14 @@ void updateScene() {
 
 	camera.update(player);
 	player.update(camera.getYaw(), true);
+	//light.updateViaCam(camera);
 
 	for (int i = 0; i < cans.size(); i++) {
 		cans[i].update();
+	}
+
+	for (int i = 0; i < rocks.size(); i++) {
+		rocks[i].update();
 	}
 
 	if (!DEV_MODE)
@@ -149,21 +211,31 @@ void init() {
 	skyboxShader = Shader((GLchar*)File::getAbsoluteShaderPath("skybox.vert").c_str(),
 		(GLchar*)File::getAbsoluteShaderPath("skybox.frag").c_str());
 
+	guiShader = Shader((GLchar*)File::getAbsoluteShaderPath("gui.vert").c_str(),
+		(GLchar*)File::getAbsoluteShaderPath("gui.frag").c_str());
+
 	rock = Scenery(vec3(5.0f, -0.25f, 5.0f), MESH_ROCK);
 	player = Player(vec3(2.0f, -0.5f, 2.0f), MESH_PLAYER);
 	tree = Scenery(vec3(-5.0f, -0.5f, 5.0f), MESH_TREE);
 	scene = Scene(vec3(0.0f, -1.5f, 0.0f), MESH_GROUND, 10.0f);
+	light = Light(vec3(0.0f, 0.0f, 0.0f), MESH_BOX);
 
 	for (int i = 0; i < 10; i++) {
 		srand((unsigned)time(0));
-		cans.push_back(Cans(vec3((float) (rand() % 100), 
+		cans.push_back(Cans(vec3((float)(rand() % 100),
 			-0.25f, (float)(rand() % 100)), MESH_CANS));
+	}
+
+	for (int i = 0; i < 10; i++) {
+		srand((unsigned)time(0));
+		rocks.push_back(Scenery(vec3((float)(rand() % 100),
+			-0.25f, (float)(rand() % 100)), MESH_ROCK));
 	}
 
 	Camera camera = Camera(player);
 
-	if (!DEV_MODE)
-		music.playAudio(Sound::music);
+	//if (!DEV_MODE)
+	//	music.playAudio(Sound::music);
 
 	skybox.init();
 }
@@ -186,7 +258,11 @@ void keypress(unsigned char key, int x, int y) {
 	}
 
 	if (key == 'q') {
-		sfx.playAudio(Sound::sfx, Sound::BURP_SND);
+		ramblings.playAudio(Sound::rambling);
+	}
+
+	if (key == 'f') {
+		toggleFog = !toggleFog;
 	}
 
 	player.onKey(key, camera.getTheta());

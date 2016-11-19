@@ -28,6 +28,9 @@
     <Filter Include="Miscellaneous">
       <UniqueIdentifier>{4797cef5-4eaf-4987-a712-fed840fd37c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Terrain">
+      <UniqueIdentifier>{004b3831-f747-4c24-920f-345e88306f92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,9 +60,6 @@
     <ClCompile Include="Light.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Skybox.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
@@ -78,9 +78,6 @@
     <ClCompile Include="Sound.cpp">
       <Filter>Miscellaneous</Filter>
     </ClCompile>
-    <ClCompile Include="Water.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Miscellaneous</Filter>
     </ClCompile>
@@ -89,6 +86,18 @@
     </ClCompile>
     <ClCompile Include="Manager.cpp">
       <Filter>Miscellaneous</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Generator.cpp">
+      <Filter>Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,10 +121,10 @@
     <None Include="Shaders\skybox.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\text.frag">
+    <None Include="Shaders\gui.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\text.vert">
+    <None Include="Shaders\gui.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

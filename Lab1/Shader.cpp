@@ -14,16 +14,18 @@ public:
 		std::string vertexCode, fragmentCode;
 		std::ifstream vShaderFile, fShaderFile;
 
-		vShaderFile.exceptions(std::ifstream::badbit);
-		fShaderFile.exceptions(std::ifstream::badbit);
-
 		try {
 			std::stringstream vShaderStream;
 			vShaderFile.open(vertexPath);
 			vShaderStream << vShaderFile.rdbuf();
 			vShaderFile.close();
 			vertexCode = vShaderStream.str();
+		}
+		catch (std::ifstream::failure e) {
+			std::cout << "Error in reading in shader file" << std::endl;
+		}
 
+		try {
 			std::stringstream fShaderStream;
 			fShaderFile.open(fragPath);
 			fShaderStream << fShaderFile.rdbuf();

@@ -22,6 +22,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Generator.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Scenery.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Cans.cpp" />
@@ -49,8 +51,8 @@
     <None Include="Shaders\skybox.vert" />
     <None Include="Shaders\simpleShader.frag" />
     <None Include="Shaders\simpleShader.vert" />
-    <None Include="Shaders\text.frag" />
-    <None Include="Shaders\text.vert" />
+    <None Include="Shaders\gui.frag" />
+    <None Include="Shaders\gui.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{435032E1-4FB7-48C4-A343-F59156286B38}</ProjectGuid>

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.cpp"
+#include "Camera.cpp"
 
 class Scenery : public GameObject {
 private:

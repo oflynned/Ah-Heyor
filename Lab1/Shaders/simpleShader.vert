@@ -13,10 +13,20 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+// fog
+out float visibility;
+const float density = 0.007f;
+const float gradient = 1.5f;
+
 void main() {
     gl_Position = projection * view * model * vec4(position, 1.0f);
-    
+    vec4 posRelToCam = view * gl_Position;
+
 	lighting.Position = vec3(model * vec4(position, 1.0f));
 	lighting.Normal = mat3(transpose(inverse(model))) * normal;
 	lighting.TexCoords = texCoords;
+
+	float distance = length(posRelToCam.xyz);
+	visibility = exp(-pow((distance*density),gradient));
+	visibility = clamp(visibility, 0.25f, 1.0f);
 }

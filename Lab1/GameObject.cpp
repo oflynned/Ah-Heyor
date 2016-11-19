@@ -24,7 +24,9 @@ public:
 
 	~GameObject() {}
 
+	void setModelMat(mat4 modelMat) { this->modelMat = modelMat; }
 	mat4 getModelMat() { return this->modelMat; }
+	void setPos(vec3 pos) { this->pos = pos; }
 	vec3 getPos() { return this->pos; }
 
 	virtual void update(float cameraRot = 0.0f, bool hasCamera = false, bool isFlip = false) {

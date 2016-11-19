@@ -29,18 +29,18 @@ private:
 			return;
 		}
 
-		this->dir = path.substr(0, path.find_last_of('/'));
-		this->processNode(scene->mRootNode, scene);
+		dir = path.substr(0, path.find_last_of('/'));
+		processNode(scene->mRootNode, scene);
 	}
 
 	void processNode(aiNode* node, const aiScene* scene) {
 		for (GLuint i = 0; i < node->mNumMeshes; i++) {
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			this->meshes.push_back(this->processMesh(mesh, scene));
+			meshes.push_back(this->processMesh(mesh, scene));
 		}
 
 		for (GLuint i = 0; i < node->mNumChildren; i++) {
-			this->processNode(node->mChildren[i], scene);
+			processNode(node->mChildren[i], scene);
 		}
 	}
 
@@ -74,9 +74,7 @@ private:
 				vec.v[1] = mesh->mTextureCoords[0][i].y;
 				vertex.texCoords = vec;
 			}
-			else {
-				vertex.texCoords = vec2(0.0f, 0.0f);
-			}
+			else vertex.texCoords = vec2(0.0f, 0.0f);
 
 			vertices.push_back(vertex);
 		}
@@ -125,7 +123,7 @@ private:
 				texture.type = typeName;
 				texture.path = str;
 				textures.push_back(texture);
-				this->textures_loaded.push_back(texture);
+				textures_loaded.push_back(texture);
 			}
 		}
 		return textures;
@@ -133,8 +131,7 @@ private:
 
 	GLint textureFromFile(const char* path, std::string directory) {
 		//Generate texture ID and load texture data 
-		std::string filename = std::string(path);
-		filename = directory + '/' + filename;
+		std::string filename = directory + '/' + std::string(path);
 
 		std::cout << filename << std::endl;
 		
@@ -143,7 +140,7 @@ private:
 		int width, height;
 		unsigned char* image = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 		
-		// Assign texture to ID
+		// Assign texture
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -162,14 +159,14 @@ private:
 public:
 	Model() {}
 	Model(GLchar* path) {
-		this->loadModel(path);
+		loadModel(path);
 	}
 
 	~Model() {}
 
 	void draw(Shader shader) {
-		for (GLuint i = 0; i < this->meshes.size(); i++) {
-			this->meshes[i].draw(shader);
+		for (GLuint i = 0; i < meshes.size(); i++) {
+			meshes[i].draw(shader);
 		}
 	}
 };
