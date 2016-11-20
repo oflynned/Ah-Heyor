@@ -99,6 +99,9 @@
     <ClCompile Include="Shape.cpp">
       <Filter>Loaders</Filter>
     </ClCompile>
+    <ClCompile Include="Number.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLIncludes.h">

@@ -13,12 +13,14 @@ protected:
 
 	mat4 modelMat;
 	Model model;
+	//Model cube;
 
 public:
 	GameObject() {}
 	GameObject(vec3 pos, std::string meshName, float scale_coeff) {
 		this->pos = pos;
 		this->model = Model((GLchar*)File::getAbsoluteModelPath(meshName).c_str());
+		//this->cube = Model((GLchar*) File::getAbsoluteModelPath("box/box.obj").c_str());
 		this->scale_tuple = vec3(scale_coeff, scale_coeff, scale_coeff);
 	}
 
@@ -29,7 +31,17 @@ public:
 	void setPos(vec3 pos) { this->pos = pos; }
 	vec3 getPos() { return this->pos; }
 
+	virtual void update(vec3 newPos, bool flip_y = false) {
+		modelMat = identity_mat4();
+		modelMat = rotate_x_deg(modelMat, rot_x);
+		modelMat = flip_y ? rotate_y_deg(modelMat, -rot_y) : rotate_y_deg(modelMat, rot_y);
+		modelMat = rotate_z_deg(modelMat, rot_z);
+		modelMat = scale(modelMat, scale_tuple);
+		modelMat = translate(modelMat, newPos);
+	}
+
 	virtual void update(float cameraRot = 0.0f, bool hasCamera = false, bool isFlip = false) {
+		//global
 		modelMat = identity_mat4();
 		modelMat = isFlip ? rotate_x_deg(modelMat, -90.0f) : rotate_x_deg(modelMat, rot_x);
 		modelMat = hasCamera ? rotate_y_deg(modelMat, cameraRot) : rotate_y_deg(modelMat, rot_y);

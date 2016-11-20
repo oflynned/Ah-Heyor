@@ -106,6 +106,8 @@ public:
 		this->yaw = 180 - (player.getYRot() + angleAroundPlayer);
 	}
 
+	float getAngleAroundPlayer() { return this->angleAroundPlayer; }
+
 	float getYaw() const { return this->yaw; }
 	float getTheta() const { return this->theta; }
 	float getPitch() const { return this->pitch; }
