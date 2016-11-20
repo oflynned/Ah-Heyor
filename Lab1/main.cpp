@@ -43,8 +43,9 @@
 #define MESH_THREE "text/3/3.obj"
 #define MESH_SLASH "text/slash/slash.obj"
 
-//macro offset
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+//outcome
+#define MESH_WIN "text/win/win.obj"
+#define MESH_LOSS "text/loss/loss.obj"
 
 using namespace std;
 
@@ -57,7 +58,8 @@ Scenery rock, tree;
 Scene scene;
 Skybox skybox;
 
-Number gui_zero, gui_one, gui_two, gui_three, gui_slash;
+Number gui_zero, gui_one, gui_two, gui_three, gui_total_cans, gui_slash;
+Number win, loss;
 
 std::vector<Scenery> trees;
 std::vector<Scenery> rocks;
@@ -130,20 +132,27 @@ void drawGUI() {
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
 	
-	glUniform3fv(colour_location, 1, vec3(1.0, 0.0, 0.0).v);
-	gui_zero.draw(guiShader, model_matrix_location);
+	glUniform3fv(colour_location, 1, vec3(0.0, 0.0, 1.0).v);
+	switch (cans.size()) {
+	case 3:
+		gui_three.draw(guiShader, model_matrix_location);
+		break;
+	case 2:
+		gui_two.draw(guiShader, model_matrix_location);
+		break;
+	case 1:
+		gui_one.draw(guiShader, model_matrix_location);
+		break;
+	case 0:
+		gui_zero.draw(guiShader, model_matrix_location);
+		break;
+	}
 
 	glUniform3fv(colour_location, 1, vec3(0.0, 1.0, 0.0).v);
-	gui_one.draw(guiShader, model_matrix_location);
-	
-	glUniform3fv(colour_location, 1, vec3(0.0, 0.0, 1.0).v);
-	gui_two.draw(guiShader, model_matrix_location);
-
-	glUniform3fv(colour_location, 1, vec3(1.0, 1.0, 0.0).v);
-	gui_three.draw(guiShader, model_matrix_location);
-
-	glUniform3fv(colour_location, 1, vec3(1.0, 1.0, 1.0).v);
 	gui_slash.draw(guiShader, model_matrix_location);
+
+	glUniform3fv(colour_location, 1, vec3(1.0, 0.0, 0.0).v);
+	gui_total_cans.draw(guiShader, model_matrix_location);
 }
 
 void drawObjects() {
@@ -243,6 +252,7 @@ void updateScene() {
 	gui_two.reposition(player);
 	gui_three.reposition(player);
 	gui_slash.reposition(player);
+	gui_total_cans.reposition(player);
 
 	for (int i = 0; i < cans.size(); i++) {
 		cans[i].update();
@@ -277,11 +287,12 @@ void init() {
 	light = Light(vec3(0.0f, 0.0f + DISP_VERT, 0.0f), MESH_BOX);
 	rock = Scenery(vec3(5.0f, -0.25f + DISP_VERT, 5.0f), MESH_ROCK);
 
-	gui_zero = Number(player, vec3(-2.0, 4.5, 0.0), MESH_ZERO);
+	gui_zero = Number(player, vec3(-1.0, 4.5, 0.0), MESH_ZERO);
 	gui_one = Number(player, vec3(-1.0, 4.5, 0.0), MESH_ONE);
-	gui_two = Number(player, vec3(0.0, 4.5, 0.0), MESH_TWO);
-	gui_three = Number(player, vec3(1.0, 4.5, 0.0), MESH_THREE);
-	gui_slash = Number(player, vec3(2.0, 4.5, 0.0), MESH_SLASH);
+	gui_two = Number(player, vec3(-1.0, 4.5, 0.0), MESH_TWO);
+	gui_three = Number(player, vec3(-1.0, 4.5, 0.0), MESH_THREE);
+	gui_total_cans = Number(player, vec3(1.0, 4.5, 0.0), MESH_THREE);
+	gui_slash = Number(player, vec3(0.0, 4.5, 0.0), MESH_SLASH);
 
 	for (int i = 0; i < SPAWN_CAN_SIZE; i++) {
 		srand((unsigned)time(0));
