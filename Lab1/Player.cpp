@@ -3,9 +3,6 @@
 #include "Cans.cpp"
 
 class Player : public GameObject {
-private:
-	int health = TOTAL_HEALTH;
-
 public:
 	enum State {
 		MOVING, IDLE, INTERACTING
@@ -28,8 +25,6 @@ public:
 		modelMat = rotate_z_deg(modelMat, rot_z);
 		modelMat = scale(modelMat, scale_tuple);
 		modelMat = translate(modelMat, pos);
-
-		decrementHealth();
 	}
 
 	void onKey(unsigned char key, float cameraRot) override {
@@ -66,19 +61,6 @@ public:
 
 	void setState(State state) { this->state = state; }
 	State getState() { return this->state; }
-
-	int getHealth() { return this->health; }
-
-	void decrementHealth() {
-		this->health--;
-		if (health < 0)
-			health = 0; 
-	}
-
-	void incrementHealth() {
-		this->health += INCREMENT_HEALTH;
-		if (health > TOTAL_HEALTH) health = TOTAL_HEALTH;
-	}
 
 private:
 	State state = State::IDLE;

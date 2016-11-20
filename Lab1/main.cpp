@@ -75,8 +75,8 @@ float delta;
 int width = DEV_MODE ? 800 : 1920;
 int height = DEV_MODE ? 600 : 1080;
 
-float getHealthPercentage(Player& player) {
-	return (float)player.getHealth() / (float)TOTAL_HEALTH;
+float getHealthPercentage() {
+	return (float)Manager::getInstance().getHealth() / (float)TOTAL_HEALTH;
 }
 
 void drawText(std::string text, int x, int y, int z) {
@@ -111,8 +111,8 @@ void drawGUI() {
 	glColor3f(0.0, 1.0, 0.0);
 
 	glVertex3f(player.getPos().v[0] + 1.0, player.getPos().v[1] + 4.0, player.getPos().v[2]);
-	glVertex3f(player.getPos().v[0] - 1.0 * getHealthPercentage(player), player.getPos().v[1] + 4.0, player.getPos().v[2]);
-	glVertex3f(player.getPos().v[0] - 1.0 * getHealthPercentage(player), player.getPos().v[1] + 4.25, player.getPos().v[2]);
+	glVertex3f(player.getPos().v[0] - 1.0 * getHealthPercentage(), player.getPos().v[1] + 4.0, player.getPos().v[2]);
+	glVertex3f(player.getPos().v[0] - 1.0 * getHealthPercentage(), player.getPos().v[1] + 4.25, player.getPos().v[2]);
 	glVertex3f(player.getPos().v[0] + 1.0, player.getPos().v[1] + 4.25, player.getPos().v[2]);
 
 	glEnd();
@@ -245,7 +245,7 @@ void updateScene() {
 
 	camera.update(player);
 	player.update(camera.getYaw(), true);
-	Manager::getInstance().checkGameState(cans.size(), player.getHealth());
+	Manager::getInstance().checkGameState(cans.size());
 
 	gui_zero.reposition(player);
 	gui_one.reposition(player);
@@ -293,11 +293,11 @@ void init() {
 	gui_three = Number(player, vec3(-1.0, 4.5, 0.0), MESH_THREE);
 	gui_total_cans = Number(player, vec3(1.0, 4.5, 0.0), MESH_THREE);
 	gui_slash = Number(player, vec3(0.0, 4.5, 0.0), MESH_SLASH);
-
+	
 	for (int i = 0; i < SPAWN_CAN_SIZE; i++) {
 		srand((unsigned)time(0));
-		cans.push_back(Cans(vec3((float)((rand() % 100) - 50),
-			-0.25f, (float)((rand() % 100) - 50)), MESH_CANS));
+		cans.push_back(Cans(vec3((float)(rand() % 100),
+			-0.25f + DISP_VERT, (float)(rand() % 100) - 50), MESH_CANS));
 	}
 
 	for (int i = 0; i < 10; i++) {
@@ -326,7 +326,7 @@ void keypress(unsigned char key, int x, int y) {
 		for (int i = 0; i < cans.size(); i++) {
 			if (player.tolerance(cans.at(i))) {
 				cans.erase(cans.begin() + i);
-				player.incrementHealth();
+				Manager::getInstance().incrementHealth();
 				if (!DEV_MODE)
 					sfx.playAudio(Sound::sfx, Sound::BURP_SND);
 			}
@@ -367,6 +367,16 @@ void mouseMove(int x, int y) {
 	camera.mouseMoveThirdPerson(xoffset, yoffset);
 }
 
+void mouseMove(int button, int dir, int x, int y) {
+	float xoffset = x - last_x;
+	float yoffset = last_y - y;
+
+	last_x = (float)x;
+	last_y = (float)y;
+
+	camera.mouseMoveThirdPerson(xoffset, yoffset, button);
+}
+
 int main(int argc, char** argv) {
 	// Set up the window
 	glutInit(&argc, argv);
@@ -380,6 +390,7 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(keypress);
 	glutKeyboardUpFunc(releaseKeypress);
 	glutPassiveMotionFunc(mouseMove);
+	//glutMouseFunc(mouseMove);
 	glutMouseWheelFunc(mouseRoll);
 
 	//hide cursor for camerav

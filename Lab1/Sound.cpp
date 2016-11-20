@@ -1,8 +1,9 @@
 #pragma once
-#include "windows.h"
+
+#include <windows.h>
+#include <mmsystem.h>
 #include "GLIncludes.h"
 #include "File.cpp"
-
 #include <thread>
 
 class Sound {
@@ -15,8 +16,6 @@ private:
 	const int RAMBLING_SIZE = 8;
 	const int MUSIC_SIZE = 1;
 	const int SFX_SIZE = 4;
-
-	static const const int BURP = 3;
 
 	std::string ramblingsVals[8] = {
 		"Bob's Your Uncle",
@@ -33,9 +32,8 @@ private:
 		"Hardbass"
 	};
 
-	std::string sfxVals[4] = {
+	std::string sfxVals[3] = {
 		"Police",
-		"Picking Up",
 		"Running",
 		"Burp"
 	};
@@ -54,7 +52,9 @@ private:
 	}
 
 public:
-	static const int BURP_SND = 3;
+	static const int POLICE_SND = 0;
+	static const int RUNNING_SND = 1;
+	static const int BURP_SND = 2;
 
 	Sound() {}
 	~Sound() {}
@@ -62,26 +62,25 @@ public:
 	void playAudio(Sounds sounds, int index = -1) {
 		std::string sound;
 		int element = 0;
-		unsigned int attributes = SND_ASYNC | SND_NOSTOP;
 
 		switch (sounds) {
 		case Sounds::rambling:
 			element = generateRand(RAMBLING_SIZE);
 			sound = File::getAbsoluteSoundPath(
 				"Ramblings/" + ramblingsVals[element] + ".wav");
-			sndPlaySound((const char*)sound.c_str(), attributes);
+			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP);
 			break;
 		case Sounds::music:
 			element = generateRand(MUSIC_SIZE);
 			sound = File::getAbsoluteSoundPath(
 				"Music/" + musicVals[element] + ".wav");
-			sndPlaySound((const char*)sound.c_str(), attributes | SND_NOSTOP);
+			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP | SND_NOSTOP);
 			break;
 		case Sounds::sfx:
 			element = index == -1 ? generateRand(SFX_SIZE) : index;
 			sound = File::getAbsoluteSoundPath(
 				"Sfx/" + sfxVals[element] + ".wav");
-			sndPlaySound((const char*)sound.c_str(), attributes);
+			sndPlaySound((const char*)sound.c_str(), SND_ASYNC | SND_NOSTOP);
 			break;
 		default:
 			break;

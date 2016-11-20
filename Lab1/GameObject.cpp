@@ -13,14 +13,12 @@ protected:
 
 	mat4 modelMat;
 	Model model;
-	//Model cube;
 
 public:
 	GameObject() {}
 	GameObject(vec3 pos, std::string meshName, float scale_coeff) {
 		this->pos = pos;
 		this->model = Model((GLchar*)File::getAbsoluteModelPath(meshName).c_str());
-		//this->cube = Model((GLchar*) File::getAbsoluteModelPath("box/box.obj").c_str());
 		this->scale_tuple = vec3(scale_coeff, scale_coeff, scale_coeff);
 	}
 

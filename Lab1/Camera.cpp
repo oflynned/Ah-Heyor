@@ -106,6 +106,18 @@ public:
 		this->yaw = 180 - (player.getYRot() + angleAroundPlayer);
 	}
 
+	void mouseMoveThirdPerson(float dx, float dy, int button) {
+		if(button == 2) this->angleAroundPlayer -= dx * 0.3f;
+		if(button == 0) this->pitch -= dy * 0.1f;
+
+		float horizontalDistance = distanceFromPlayer * cos(radians(pitch));
+		float verticalDistance = distanceFromPlayer * sin(radians(pitch));
+
+		calcCameraPos(horizontalDistance, verticalDistance);
+
+		this->yaw = 180 - (player.getYRot() + angleAroundPlayer);
+	}
+
 	float getAngleAroundPlayer() { return this->angleAroundPlayer; }
 
 	float getYaw() const { return this->yaw; }
