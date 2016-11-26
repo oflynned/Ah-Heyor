@@ -25,7 +25,7 @@ void main() {
     gl_Position = projection * view * model * vec4(position, 1.0f);
     vec4 posRelToCam = view * gl_Position;
 
-	lighting.Position = vec3(499.0, -200.0, 499.0); //lightPos;
+	lighting.Position = -vec3(lightPos);
 	lighting.Normal = mat3(transpose(inverse(model))) * normal;
 	lighting.TexCoords = texCoords;
 

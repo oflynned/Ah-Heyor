@@ -29,6 +29,10 @@ public:
 	void setPos(vec3 pos) { this->pos = pos; }
 	vec3 getPos() { return this->pos; }
 
+	virtual void update(mat4 modelMat) {
+		this->modelMat = modelMat;
+	}
+
 	virtual void update(vec3 newPos, bool flip_y = false) {
 		modelMat = identity_mat4();
 		modelMat = rotate_x_deg(modelMat, rot_x);

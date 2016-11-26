@@ -2,7 +2,6 @@
                                                                           
 in vec3 position;	
 
-//uniform vec3 in_colour;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;

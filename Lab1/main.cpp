@@ -110,10 +110,10 @@ void drawGUI() {
 	glBegin(GL_POLYGON);
 	glColor3f(0.0, 1.0, 0.0);
 
-	glVertex3f(player.getPos().v[0] + 1.0, player.getPos().v[1] + 4.0, player.getPos().v[2]);
-	glVertex3f(player.getPos().v[0] - 1.0 * getHealthPercentage(), player.getPos().v[1] + 4.0, player.getPos().v[2]);
-	glVertex3f(player.getPos().v[0] - 1.0 * getHealthPercentage(), player.getPos().v[1] + 4.25, player.getPos().v[2]);
-	glVertex3f(player.getPos().v[0] + 1.0, player.getPos().v[1] + 4.25, player.getPos().v[2]);
+	glVertex3f((player.getPos().v[0] + getHealthPercentage()) - 0.5, player.getPos().v[1] + 4.0, player.getPos().v[2]);
+	glVertex3f(player.getPos().v[0] - 0.5, player.getPos().v[1] + 4.0, player.getPos().v[2]);
+	glVertex3f(player.getPos().v[0] - 0.5, player.getPos().v[1] + 4.25, player.getPos().v[2]);
+	glVertex3f((player.getPos().v[0] + getHealthPercentage()) - 0.5, player.getPos().v[1] + 4.25, player.getPos().v[2]);
 
 	glEnd();
 	glFlush();
@@ -170,7 +170,7 @@ void drawObjects() {
 
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
 	glUniformMatrix4fv(view_mat_location, 1, GL_FALSE, view.m);
-	glUniformMatrix4fv(light_pos_location, 1, GL_FALSE, vec3(5.0, 50.0, 5.0).v);
+	glUniform3fv(light_pos_location, 1, (player.getPos() + vec3(0.0, 5.0f, 0.0f)).v);
 	glUniformMatrix4fv(view_pos_location, 1, GL_FALSE, camera.getView().m);
 
 	glUniformMatrix4fv(proj_mat_location, 1, GL_FALSE, persp_proj.m);
@@ -180,8 +180,8 @@ void drawObjects() {
 	if (toggleFog) {
 		int fog_sky_colour_location = glGetUniformLocation(shader.getProgram(), "skyColour");
 		int should_toggle_fog_location = glGetUniformLocation(shader.getProgram(), "toggleFog");
-		glUniform3fv(fog_sky_colour_location, 1, vec3(0.5f, 0.5f, 0.5f).v);
 		glUniform1i(should_toggle_fog_location, toggleFog);
+		glUniform3fv(fog_sky_colour_location, 1, vec3(0.5f, 0.5f, 0.5f).v);
 	}
 
 	player.draw(shader, matrix_location);
@@ -287,12 +287,12 @@ void init() {
 	light = Light(vec3(0.0f, 0.0f + DISP_VERT, 0.0f), MESH_BOX);
 	rock = Scenery(vec3(5.0f, -0.25f + DISP_VERT, 5.0f), MESH_ROCK);
 
-	gui_zero = Number(player, vec3(-1.0, 4.5, 0.0), MESH_ZERO);
-	gui_one = Number(player, vec3(-1.0, 4.5, 0.0), MESH_ONE);
-	gui_two = Number(player, vec3(-1.0, 4.5, 0.0), MESH_TWO);
-	gui_three = Number(player, vec3(-1.0, 4.5, 0.0), MESH_THREE);
-	gui_total_cans = Number(player, vec3(1.0, 4.5, 0.0), MESH_THREE);
-	gui_slash = Number(player, vec3(0.0, 4.5, 0.0), MESH_SLASH);
+	gui_zero = Number(player, vec3(-1.0, 5.5, 0.0), MESH_ZERO);
+	gui_one = Number(player, vec3(-1.0, 5.5, 0.0), MESH_ONE);
+	gui_two = Number(player, vec3(-1.0, 5.5, 0.0), MESH_TWO);
+	gui_three = Number(player, vec3(-1.0, 5.5, 0.0), MESH_THREE);
+	gui_total_cans = Number(player, vec3(1.0, 5.5, 0.0), MESH_THREE);
+	gui_slash = Number(player, vec3(0.0, 5.5, 0.0), MESH_SLASH);
 	
 	for (int i = 0; i < SPAWN_CAN_SIZE; i++) {
 		srand((unsigned)time(0));

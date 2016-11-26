@@ -9,8 +9,6 @@ in LIGHTING {
 uniform sampler2D texture_diffuse1;
 
 out vec4 out_color;
-
-uniform vec3 lightPos;
 uniform vec3 viewPos;
 
 //fog

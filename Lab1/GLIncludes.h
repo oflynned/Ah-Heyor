@@ -14,3 +14,4 @@
 #define SPAWN_CAN_SIZE 3
 
 #define DEV_MODE true
+#define DEV_SHOW_STATE false

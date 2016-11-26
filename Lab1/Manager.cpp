@@ -42,12 +42,12 @@ public:
 			gameState = GameState::WON;
 		}
 
-		/*if (DEV_MODE) {
+		if (DEV_SHOW_STATE) {
 			std::cout << "Game state: " << gameState << ", "
 				<< cansLeft << "/" << SPAWN_CAN_SIZE << ", "
 				<< health << "/" << TOTAL_HEALTH << "("
 				<< (int)(((float)health / (float)TOTAL_HEALTH) * 100) << "%)" << std::endl;
-		}*/
+		}
 
 		if (gameState == GameState::PLAYING) {
 			decrementHealth();
